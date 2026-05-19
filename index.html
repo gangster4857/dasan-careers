@@ -381,8 +381,8 @@ body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid)
 // ══════════════════════════════════════════
 const ADMIN_PASSWORD = '1234';
 const SHEET_ID = '1oL1N5CsLi6OOi98uoPWIGa_zHzbMF7nmhteyHqtqUvY';
-const SHEET_LIST_NAME  = '공고목록';   // 공고 목록 탭
-const SHEET_DETAIL_NAME = '공고상세';  // 상세내용 저장 탭 (자동 생성)
+const SHEET_LIST_NAME  = '공고목록';
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxW7q6PuXt4NlgrFPCVAlI8-v1XB0wsZdX3MpeU9RVn9InmZNlndjf7d26Zs3mUd0YC6A/exec';
 
 // ══════════════════════════════════════════
 // 카테고리 → 아이콘 매핑
@@ -470,50 +470,46 @@ function saveDetails(d) { localStorage.setItem(DETAIL_KEY, JSON.stringify(d)); }
 async function loadFromSheets() {
   document.getElementById('loadingScreen').style.display = 'flex';
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_LIST_NAME)}`;
+    // 공고목록은 시트에서 직접 읽기 (CORS 없음)
+    const url  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_LIST_NAME)}`;
     const res  = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
-    const jsonStr = text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    const json = JSON.parse(jsonStr);
+    const json = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
 
     const cols = json.table.cols.map(c => (c.label || '').trim());
     const idx  = n => cols.findIndex(c => c === n);
-    const iOrder    = idx('공고순서');
-    const iTitle    = idx('공고명');
-    const iCat      = idx('카테고리');
-    const iDept     = idx('부서');
-    const iCareer   = idx('경력조건');
-    const iLocation = idx('근무지');
-    const iStatus   = idx('상태');
-    const iTally    = idx('Tally_URL');
-    const iDeadline = idx('마감일');
-    const iShow     = idx('노출여부');
+    const v    = (row, i) => (i >= 0 && row.c && row.c[i]) ? String(row.c[i].v ?? row.c[i].f ?? '').trim() : '';
 
-    const v = (row, i) => (i >= 0 && row.c && row.c[i]) ? String(row.c[i].v ?? row.c[i].f ?? '').trim() : '';
-
-    const details = loadDetails();
+    // 상세내용은 웹앱에서 읽기 (GET은 CORS 허용됨)
+    let details = {};
+    try {
+      const dRes  = await fetch(`${WEBAPP_URL}?action=getDetails`);
+      const dData = await dRes.json();
+      details = dData.details || {};
+    } catch(e) {
+      console.warn('상세내용 로드 실패, 템플릿 사용:', e.message);
+    }
 
     JOBS = (json.table.rows || [])
-      .filter(row => v(row, iShow).toUpperCase() === 'Y' && v(row, iTitle))
-      .sort((a, b) => parseInt(v(a, iOrder) || 99) - parseInt(v(b, iOrder) || 99))
+      .filter(row => v(row, idx('노출여부')).toUpperCase() === 'Y' && v(row, idx('공고명')))
+      .sort((a, b) => parseInt(v(a, idx('공고순서')) || 99) - parseInt(v(b, idx('공고순서')) || 99))
       .map((row, ri) => {
-        const title    = v(row, iTitle);
-        const category = v(row, iCat) || '기타';
+        const title    = v(row, idx('공고명'));
+        const category = v(row, idx('카테고리')) || '기타';
         const cat      = CATEGORY_MAP[category] || CATEGORY_MAP['기타'];
         const tmpl     = TEMPLATES[category]    || TEMPLATES['default'];
-        const id       = 'job_' + ri;
-        const saved    = details[title] || {};
+        const saved    = details[title]          || {};
         return {
-          id, title, category,
-          icon:        cat.emoji,
-          badge:       cat.badge,
-          dept:        v(row, iDept),
-          career:      v(row, iCareer),
-          location:    v(row, iLocation),
-          status:      v(row, iStatus) || '채용중',
-          tallyUrl:    v(row, iTally)  || 'https://tally.so/r/vGJq08',
-          deadline:    v(row, iDeadline) || '채용시마감',
+          id: 'job_' + ri, title, category,
+          icon: cat.emoji, badge: cat.badge,
+          dept:        v(row, idx('부서')),
+          career:      v(row, idx('경력조건')),
+          location:    v(row, idx('근무지')),
+          status:      v(row, idx('상태'))     || '채용중',
+          tallyUrl:    v(row, idx('Tally_URL'))|| 'https://tally.so/r/vGJq08',
+          deadline:    v(row, idx('마감일'))   || '채용시마감',
+          show:        v(row, idx('노출여부')) || 'Y',
+          order:       parseInt(v(row, idx('공고순서')) || ri + 1),
           companyDesc: saved.companyDesc || tmpl.companyDesc,
           duties:      saved.duties      || [...tmpl.duties],
           required:    saved.required    || [...tmpl.required],
@@ -837,22 +833,43 @@ function syncFromDOM() {
   });
 }
 
-function saveToSheet() {
+async function saveToSheet() {
   syncFromDOM();
-  // 상세 내용을 localStorage에 저장 (제목 기준 키)
-  const details = {};
-  JOBS.forEach(job => {
-    details[job.title] = {
-      companyDesc: job.companyDesc,
-      duties:      job.duties,
-      required:    job.required,
-      preferred:   job.preferred,
-      benefits:    job.benefits,
-      cultureNote: job.cultureNote,
-    };
-  });
-  saveDetails(details);
-  showToast('✅ 저장 완료! 공고 추가/삭제는 구글 시트 "공고목록" 탭에서 반영하세요.', 4500);
+  showToast('💾 저장 중...', 60000);
+
+  try {
+    // 공고목록 저장
+    const jobsToSave = JOBS.map((j, i) => ({
+      order: i + 1, title: j.title, category: j.category,
+      dept: j.dept, career: j.career, location: j.location,
+      status: j.status, tallyUrl: j.tallyUrl,
+      deadline: j.deadline, show: j.show || 'Y',
+    }));
+
+    // 상세내용 저장
+    const details = {};
+    JOBS.forEach(j => {
+      details[j.title] = {
+        companyDesc: j.companyDesc, duties: j.duties,
+        required: j.required, preferred: j.preferred,
+        benefits: j.benefits, cultureNote: j.cultureNote,
+      };
+    });
+
+    // Apps Script는 GET 파라미터로 데이터 전달 (CORS 우회)
+    const payload = encodeURIComponent(JSON.stringify({
+      jobs: jobsToSave, details
+    }));
+    const saveUrl = `${WEBAPP_URL}?action=saveAll&data=${payload}`;
+
+    // no-cors로 요청 (응답은 못 읽지만 실행은 됨)
+    await fetch(saveUrl, { mode: 'no-cors' });
+
+    showToast('✅ 저장 완료! 구글 시트에 반영됐습니다.', 4000);
+
+  } catch(e) {
+    showToast('❌ 저장 실패: ' + e.message, 5000);
+  }
 }
 
 // ══════════════════════════════════════════
