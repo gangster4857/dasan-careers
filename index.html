@@ -467,81 +467,68 @@ function saveDetails(d) { localStorage.setItem(DETAIL_KEY, JSON.stringify(d)); }
 // ══════════════════════════════════════════
 // 구글 시트에서 공고목록 불러오기
 // ══════════════════════════════════════════
-function loadFromSheets() {
+async function loadFromSheets() {
   document.getElementById('loadingScreen').style.display = 'flex';
-  const old = document.getElementById('gviz-job-script');
-  if (old) old.remove();
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_LIST_NAME)}`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const jsonStr = text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    const json = JSON.parse(jsonStr);
 
-  window.__jobListCallback = function(json) {
-    clearTimeout(window.__jobTimeout);
-    try {
-      const cols = json.table.cols.map(c => (c.label || '').trim());
-      const idx = n => cols.findIndex(c => c === n);
-      const iOrder    = idx('공고순서');
-      const iTitle    = idx('공고명');
-      const iCat      = idx('카테고리');
-      const iDept     = idx('부서');
-      const iCareer   = idx('경력조건');
-      const iLocation = idx('근무지');
-      const iStatus   = idx('상태');
-      const iTally    = idx('Tally_URL');
-      const iDeadline = idx('마감일');
-      const iShow     = idx('노출여부');
+    const cols = json.table.cols.map(c => (c.label || '').trim());
+    const idx  = n => cols.findIndex(c => c === n);
+    const iOrder    = idx('공고순서');
+    const iTitle    = idx('공고명');
+    const iCat      = idx('카테고리');
+    const iDept     = idx('부서');
+    const iCareer   = idx('경력조건');
+    const iLocation = idx('근무지');
+    const iStatus   = idx('상태');
+    const iTally    = idx('Tally_URL');
+    const iDeadline = idx('마감일');
+    const iShow     = idx('노출여부');
 
-      const v = (row, i) => (i >= 0 && row.c && row.c[i]) ? String(row.c[i].v ?? row.c[i].f ?? '').trim() : '';
+    const v = (row, i) => (i >= 0 && row.c && row.c[i]) ? String(row.c[i].v ?? row.c[i].f ?? '').trim() : '';
 
-      const details = loadDetails();
+    const details = loadDetails();
 
-      JOBS = (json.table.rows || [])
-        .filter(row => v(row, iShow).toUpperCase() === 'Y' && v(row, iTitle))
-        .sort((a, b) => parseInt(v(a, iOrder)) - parseInt(v(b, iOrder)))
-        .map((row, ri) => {
-          const title    = v(row, iTitle);
-          const category = v(row, iCat) || '기타';
-          const cat      = CATEGORY_MAP[category] || CATEGORY_MAP['기타'];
-          const tmpl     = TEMPLATES[category] || TEMPLATES['default'];
-          const id       = 'job_' + ri;
-          const saved    = details[title] || {};
+    JOBS = (json.table.rows || [])
+      .filter(row => v(row, iShow).toUpperCase() === 'Y' && v(row, iTitle))
+      .sort((a, b) => parseInt(v(a, iOrder) || 99) - parseInt(v(b, iOrder) || 99))
+      .map((row, ri) => {
+        const title    = v(row, iTitle);
+        const category = v(row, iCat) || '기타';
+        const cat      = CATEGORY_MAP[category] || CATEGORY_MAP['기타'];
+        const tmpl     = TEMPLATES[category]    || TEMPLATES['default'];
+        const id       = 'job_' + ri;
+        const saved    = details[title] || {};
+        return {
+          id, title, category,
+          icon:        cat.emoji,
+          badge:       cat.badge,
+          dept:        v(row, iDept),
+          career:      v(row, iCareer),
+          location:    v(row, iLocation),
+          status:      v(row, iStatus) || '채용중',
+          tallyUrl:    v(row, iTally)  || 'https://tally.so/r/vGJq08',
+          deadline:    v(row, iDeadline) || '채용시마감',
+          companyDesc: saved.companyDesc || tmpl.companyDesc,
+          duties:      saved.duties      || [...tmpl.duties],
+          required:    saved.required    || [...tmpl.required],
+          preferred:   saved.preferred   || [...tmpl.preferred],
+          benefits:    saved.benefits    || DEFAULT_BENEFITS.map(b => ({...b, items:[...b.items]})),
+          cultureNote: saved.cultureNote || '내근 100% · 자율 복장 · 야근 거의 없음',
+        };
+      });
 
-          return {
-            id,
-            title,
-            category,
-            icon:        cat.emoji,
-            badge:       cat.badge,
-            dept:        v(row, iDept),
-            career:      v(row, iCareer),
-            location:    v(row, iLocation),
-            status:      v(row, iStatus) || '채용중',
-            tallyUrl:    v(row, iTally) || 'https://tally.so/r/vGJq08',
-            deadline:    v(row, iDeadline) || '채용시마감',
-            // 상세 내용: 저장된 것 우선, 없으면 템플릿
-            companyDesc: saved.companyDesc || tmpl.companyDesc,
-            duties:      saved.duties      || [...tmpl.duties],
-            required:    saved.required    || [...tmpl.required],
-            preferred:   saved.preferred   || [...tmpl.preferred],
-            benefits:    saved.benefits    || DEFAULT_BENEFITS.map(b => ({...b, items:[...b.items]})),
-            cultureNote: saved.cultureNote || '내근 100% · 자율 복장 · 야근 거의 없음',
-          };
-        });
+    document.getElementById('loadingScreen').style.display = 'none';
+    renderAll();
 
-      document.getElementById('loadingScreen').style.display = 'none';
-      renderAll();
-    } catch(e) {
-      showError('데이터 파싱 오류: ' + e.message);
-    }
-  };
-
-  window.__jobTimeout = setTimeout(() => {
-    showError('시트 연결 실패. 구글 시트 공유 설정(링크 있는 사용자 - 뷰어)을 확인하세요.');
-  }, 10000);
-
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_LIST_NAME)}&callback=__jobListCallback`;
-  const script = document.createElement('script');
-  script.id = 'gviz-job-script';
-  script.src = url;
-  script.onerror = () => showError('시트 연결 실패. 공유 설정을 확인하세요.');
-  document.head.appendChild(script);
+  } catch(e) {
+    showError('시트 연결 실패: ' + e.message);
+  }
 }
 
 function showError(msg) {
