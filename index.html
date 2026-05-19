@@ -480,12 +480,20 @@ async function loadFromSheets() {
     const idx  = n => cols.findIndex(c => c === n);
     const v    = (row, i) => (i >= 0 && row.c && row.c[i]) ? String(row.c[i].v ?? row.c[i].f ?? '').trim() : '';
 
-    // 상세내용은 웹앱에서 읽기 (GET은 CORS 허용됨)
+    // 상세내용은 구글 시트 "공고상세" 탭에서 읽기
     let details = {};
     try {
-      const dRes  = await fetch(`${WEBAPP_URL}?action=getDetails`);
-      const dData = await dRes.json();
-      details = dData.details || {};
+      const dUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('공고상세')}`;
+      const dRes  = await fetch(dUrl);
+      const dText = await dRes.text();
+      const dJson = JSON.parse(dText.slice(dText.indexOf('{'), dText.lastIndexOf('}') + 1));
+      const dRows = dJson.table?.rows || [];
+      dRows.forEach(row => {
+        const title = String(row.c?.[0]?.v || '').trim();
+        if (!title) return;
+        try { details[title] = JSON.parse(row.c?.[1]?.v || '{}'); }
+        catch(e) { details[title] = {}; }
+      });
     } catch(e) {
       console.warn('상세내용 로드 실패, 템플릿 사용:', e.message);
     }
@@ -854,20 +862,16 @@ async function saveToSheet() {
       };
     });
 
-    const payload = JSON.stringify({ action: 'saveAll', jobs: jobsToSave, details });
-
-    // form-urlencoded POST → CORS preflight 없이 통과
-    const form = new FormData();
-    form.append('payload', payload);
-
-    await fetch(WEBAPP_URL, {
+    const res = await fetch('/.netlify/functions/save-details', {
       method: 'POST',
-      mode: 'no-cors',
-      body: payload,
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobs: jobsToSave, details }),
     });
 
-    showToast('✅ 저장 완료! 구글 시트에 반영됐습니다.', 4000);
+    const result = await res.json();
+    if (result.error) throw new Error(result.error);
+
+    showToast('✅ 저장 완료! 모든 사람에게 반영됩니다.', 4000);
 
   } catch(e) {
     showToast('❌ 저장 실패: ' + e.message, 5000);
