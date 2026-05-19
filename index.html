@@ -838,15 +838,13 @@ async function saveToSheet() {
   showToast('💾 저장 중...', 60000);
 
   try {
-    // 공고목록 저장
     const jobsToSave = JOBS.map((j, i) => ({
-      order: i + 1, title: j.title, category: j.category,
+      order: i+1, title: j.title, category: j.category,
       dept: j.dept, career: j.career, location: j.location,
       status: j.status, tallyUrl: j.tallyUrl,
       deadline: j.deadline, show: j.show || 'Y',
     }));
 
-    // 상세내용 저장
     const details = {};
     JOBS.forEach(j => {
       details[j.title] = {
@@ -856,14 +854,18 @@ async function saveToSheet() {
       };
     });
 
-    // Apps Script는 GET 파라미터로 데이터 전달 (CORS 우회)
-    const payload = encodeURIComponent(JSON.stringify({
-      jobs: jobsToSave, details
-    }));
-    const saveUrl = `${WEBAPP_URL}?action=saveAll&data=${payload}`;
+    const payload = JSON.stringify({ action: 'saveAll', jobs: jobsToSave, details });
 
-    // no-cors로 요청 (응답은 못 읽지만 실행은 됨)
-    await fetch(saveUrl, { mode: 'no-cors' });
+    // form-urlencoded POST → CORS preflight 없이 통과
+    const form = new FormData();
+    form.append('payload', payload);
+
+    await fetch(WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: payload,
+      headers: { 'Content-Type': 'text/plain' },
+    });
 
     showToast('✅ 저장 완료! 구글 시트에 반영됐습니다.', 4000);
 
