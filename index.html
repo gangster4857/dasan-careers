@@ -9,20 +9,20 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --ink:#0D1B2A;--ink2:#1A2E45;
-  --teal:#0B7285;--teal-mid:#0E8FA5;--teal-soft:#E0F5F8;--teal-pale:#F0FAFB;
+  --teal:#0B7285;--teal-mid:#0E8FA5;--teal-soft:#E0F5F8;
   --gold:#B8912A;--gold-light:#F0D58C;--gold-pale:#FDF6E3;
   --off:#F8F7F4;--bg:#F2F4F7;
   --border:#E4E1D9;--border2:#D5D2CA;
   --mid:#5C6370;--light:#9AA0AC;
   --green:#059669;--green-bg:#ECFDF5;
-  --red:#DC2626;--red-bg:#FEF2F2;
+  --red:#DC2626;
   --sidebar-w:268px;--topbar-h:52px;
 }
 html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;}
 .layout{display:flex;height:100vh;overflow:hidden;}
 
 /* ── SIDEBAR ── */
-.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--ink);display:flex;flex-direction:column;overflow-y:auto;position:relative;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--ink);display:flex;flex-direction:column;overflow-y:auto;}
 .sb-brand{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;}
 .sb-brand-mark{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px;}
 .sb-brand-name{font-size:15px;font-weight:700;color:#fff;}
@@ -32,22 +32,23 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
 .sb-job-head{display:flex;align-items:center;gap:10px;padding:10px 12px;}
 .sb-job-head:hover{background:rgba(255,255,255,.05);}
 .sb-job.active .sb-job-head{background:rgba(11,114,133,.3);}
-.sb-job-icon{width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.sb-job-icon{width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 .sb-job.active .sb-job-icon{background:var(--teal);}
 .sb-job-info{flex:1;min-width:0;}
 .sb-job-title{font-size:12px;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sb-job-meta{font-size:10px;color:rgba(255,255,255,.35);}
 .sb-job-badge{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:var(--green);color:#fff;padding:2px 7px;border-radius:8px;flex-shrink:0;}
 .sb-job-badge.closed{background:rgba(255,255,255,.15);color:rgba(255,255,255,.4);}
-/* 관리자 모드 공고 액션 버튼 */
-.sb-job-actions{display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);gap:4px;z-index:10;}
+.sb-job-badge.pending{background:#D97706;color:#fff;}
+/* 관리자 모드 사이드바 액션 */
+.sb-job-actions{display:none;position:absolute;right:6px;top:50%;transform:translateY(-50%);gap:3px;}
 body.admin-mode .sb-job-actions{display:flex;}
-body.admin-mode .sb-job-head{padding-right:80px;}
-.sb-action-btn{width:24px;height:24px;border-radius:4px;border:none;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.sb-action-copy{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
-.sb-action-copy:hover{background:rgba(11,114,133,.5);color:#fff;}
-.sb-action-del{background:rgba(255,255,255,.1);color:rgba(255,255,255,.4);}
-.sb-action-del:hover{background:rgba(220,38,38,.5);color:#fff;}
+body.admin-mode .sb-job-head{padding-right:72px;}
+.sb-act{width:26px;height:26px;border-radius:4px;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.sb-act-copy{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
+.sb-act-copy:hover{background:rgba(11,114,133,.5);color:#fff;}
+.sb-act-del{background:rgba(255,255,255,.1);color:rgba(255,255,255,.4);}
+.sb-act-del:hover{background:rgba(220,38,38,.5);color:#fff;}
 .sb-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:10px 0;}
 .sb-link{display:flex;align-items:center;gap:9px;padding:8px 20px;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;text-decoration:none;transition:color .15s;}
 .sb-link:hover{color:rgba(255,255,255,.8);}
@@ -61,38 +62,41 @@ body.admin-mode .sb-job-head{padding-right:80px;}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .topbar{height:var(--topbar-h);flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;}
 .topbar-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--light);}
-.topbar-breadcrumb span{color:var(--mid);}
 .topbar-breadcrumb .sep{color:var(--border2);}
+.topbar-breadcrumb span{color:var(--mid);}
 .topbar-actions{display:flex;align-items:center;gap:10px;}
 .topbar-apply-btn{display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:#fff;font-size:12px;font-weight:700;padding:8px 18px;border-radius:5px;text-decoration:none;cursor:pointer;border:none;font-family:inherit;transition:background .15s;}
 .topbar-apply-btn:hover{background:var(--teal-mid);}
 .topbar-link{font-size:12px;color:var(--mid);text-decoration:none;}
 .topbar-link:hover{color:var(--teal);}
-.content{flex:1;overflow-y:auto;}
+.content{flex:1;overflow-y:auto;position:relative;}
+
+/* 로딩 */
+.loading-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:10;}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--teal-soft);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:13px;color:var(--mid);}
+.error-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:10;display:none;}
+.error-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:28px 32px;text-align:center;max-width:400px;}
+.error-title{font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px;}
+.error-desc{font-size:13px;color:var(--mid);line-height:1.7;}
 
 /* ── JOB PANELS ── */
 .job-panel{display:none;}
 .job-panel.active{display:block;}
-
-/* JOB HERO */
 .job-hero{background:linear-gradient(135deg,#0D1B2A 0%,#1A3A5C 55%,#0B6070 100%);padding:40px 48px 36px;position:relative;overflow:hidden;}
 .job-hero-orb1{position:absolute;top:-60px;right:-40px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(11,114,133,.25) 0%,transparent 65%);pointer-events:none;}
 .job-hero-orb2{position:absolute;bottom:-40px;left:5%;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(184,145,42,.14) 0%,transparent 65%);pointer-events:none;}
 .job-hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:14px;}
 .job-hero-dept{color:rgba(255,255,255,.4);font-size:12px;margin-bottom:8px;}
 .job-hero-title{font-family:'DM Serif Display',serif;color:#fff;font-size:30px;line-height:1.25;margin-bottom:10px;position:relative;z-index:1;}
-.job-hero-title em{color:var(--gold-light);font-style:normal;}
 .job-hero-chips{display:flex;flex-wrap:wrap;gap:7px;position:relative;z-index:1;}
 .chip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.82);font-size:12px;padding:5px 12px;border-radius:16px;}
-
-/* BODY SECTIONS */
 .job-body{padding:32px 48px 60px;}
 .jb-section{margin-bottom:36px;}
 .jb-hd{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
 .jb-bar{width:4px;height:20px;background:var(--teal);border-radius:2px;flex-shrink:0;}
 .jb-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);}
-
-/* INFO TABLE */
 .info-table{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
 .info-table tr{border-bottom:1px solid var(--border);}
 .info-table tr:last-child{border-bottom:none;}
@@ -101,17 +105,11 @@ body.admin-mode .sb-job-head{padding-right:80px;}
 .info-badge{display:inline-flex;align-items:center;background:var(--teal-soft);color:var(--teal);font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;margin-right:5px;}
 .info-badge.gold{background:var(--gold-pale);color:var(--gold);}
 .info-badge.green{background:var(--green-bg);color:var(--green);}
-
-/* CALLOUT */
 .callout{background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:4px;padding:14px 18px;font-size:13.5px;color:var(--ink);line-height:1.8;margin-bottom:20px;display:flex;gap:10px;}
 .callout-icon{font-size:18px;flex-shrink:0;}
-
-/* DUTY GRID */
 .duty-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.duty-item{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1.5px solid var(--teal-soft);border-left:4px solid var(--teal);border-radius:6px;padding:14px 16px;font-size:14px;font-weight:500;color:var(--ink);line-height:1.5;box-shadow:0 1px 4px rgba(11,114,133,.06);}
+.duty-item{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1.5px solid var(--teal-soft);border-left:4px solid var(--teal);border-radius:6px;padding:14px 16px;font-size:14px;font-weight:500;color:var(--ink);line-height:1.5;}
 .duty-item::before{content:'▸';color:var(--teal);flex-shrink:0;margin-top:1px;font-size:13px;}
-
-/* QUAL */
 .qual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .qual-box{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
 .qual-box-head{padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -121,19 +119,15 @@ body.admin-mode .sb-job-head{padding-right:80px;}
 .qual-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);margin-bottom:8px;line-height:1.55;}
 .qual-item:last-child{margin-bottom:0;}
 .qdot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:6px;}
-
-/* BENEFIT KANBAN */
 .benefit-kanban{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
 .benefit-col{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;}
-.bc-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.bc-card{background:var(--off);border:1px solid var(--border);border-radius:5px;padding:8px 12px;margin-bottom:6px;font-size:12.5px;color:var(--mid);display:flex;align-items:center;gap:6px;}
+.bc-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+.bc-card{background:var(--off);border:1px solid var(--border);border-radius:5px;padding:8px 12px;margin-bottom:6px;font-size:12.5px;color:var(--mid);}
 .bc-card:last-child{margin-bottom:0;}
 .culture-note{background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:13px 16px;font-size:13px;color:#92400E;display:flex;align-items:center;gap:8px;}
-
-/* PROCESS */
-.proc-wrap{display:flex;align-items:flex-start;gap:0;position:relative;padding:8px 0;}
+.proc-wrap{position:relative;padding:8px 0;}
 .proc-wrap::before{content:'';position:absolute;left:27px;top:54px;bottom:24px;width:2px;background:linear-gradient(180deg,var(--teal),rgba(11,114,133,.1));border-radius:1px;}
-.proc-item{display:flex;gap:16px;margin-bottom:24px;position:relative;z-index:1;width:100%;}
+.proc-item{display:flex;gap:16px;margin-bottom:24px;position:relative;z-index:1;}
 .proc-item:last-child{margin-bottom:0;}
 .proc-num{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;position:relative;z-index:1;border:3px solid;}
 .proc-num.n1{background:var(--ink);border-color:var(--teal);box-shadow:0 0 0 4px rgba(11,114,133,.12);}
@@ -146,8 +140,6 @@ body.admin-mode .sb-job-head{padding-right:80px;}
 .proc-content{padding:12px 0 0;}
 .proc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px;}
 .proc-sub{font-size:12.5px;color:var(--mid);}
-
-/* APPLY CTA */
 .apply-cta{background:var(--ink);border-radius:10px;padding:32px;text-align:center;margin-top:8px;}
 .apply-cta-title{font-family:'DM Serif Display',serif;color:#fff;font-size:20px;margin-bottom:6px;}
 .apply-cta-sub{color:rgba(255,255,255,.45);font-size:13px;margin-bottom:22px;}
@@ -155,43 +147,26 @@ body.admin-mode .sb-job-head{padding-right:80px;}
 .apply-cta-btn:hover{opacity:.9;}
 .apply-cta-contact{color:rgba(255,255,255,.25);font-size:12px;margin-top:12px;}
 
-/* ── 관리자 모드 ── */
-body.admin-mode [contenteditable="true"]{outline:2px dashed rgba(11,114,133,.4);border-radius:3px;cursor:text;transition:outline .15s;}
-body.admin-mode [contenteditable="true"]:hover{outline:2px solid var(--teal);background:rgba(11,114,133,.03);}
-body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid);background:rgba(11,114,133,.05);}
+/* ── 카테고리 아이콘 선택기 ── */
+.icon-picker{display:none;position:fixed;inset:0;z-index:10001;background:rgba(13,27,42,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.icon-picker.show{display:flex;}
+.icon-picker-box{background:#fff;border-radius:12px;padding:24px;width:380px;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.icon-picker-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.icon-picker-sub{font-size:12px;color:var(--mid);margin-bottom:16px;}
+.icon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.icon-opt{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;}
+.icon-opt:hover{border-color:var(--teal);background:var(--teal-soft);}
+.icon-opt.selected{border-color:var(--teal);background:var(--teal-soft);}
+.icon-opt-emoji{font-size:24px;}
+.icon-opt-label{font-size:10px;font-weight:600;color:var(--mid);text-align:center;line-height:1.3;}
+.icon-picker-cancel{margin-top:14px;width:100%;padding:9px;background:#fff;color:var(--mid);border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;}
 
-/* 관리자 바 */
-.admin-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1E293B;border-top:2px solid var(--teal);padding:10px 24px;align-items:center;gap:10px;flex-wrap:wrap;}
-.admin-bar.show{display:flex;}
-.admin-bar-label{font-size:12px;font-weight:700;color:var(--gold-light);letter-spacing:1px;text-transform:uppercase;}
-.admin-bar-tip{font-size:11px;color:rgba(255,255,255,.35);flex:1;}
-.admin-btn{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:5px;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;transition:all .15s;}
-.admin-btn-add{background:#059669;color:#fff;}
-.admin-btn-add:hover{background:#047857;}
-.admin-btn-save{background:var(--teal);color:#fff;}
-.admin-btn-save:hover{background:var(--teal-mid);}
-.admin-btn-exit{background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);}
-.admin-btn-exit:hover{color:#fff;border-color:rgba(255,255,255,.5);}
-
-/* 비밀번호 모달 */
-.pw-modal-bg{display:none;position:fixed;inset:0;z-index:10000;background:rgba(13,27,42,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
-.pw-modal-bg.show{display:flex;}
-.pw-modal{background:#fff;border-radius:10px;padding:32px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);}
-.pw-modal-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
-.pw-modal-sub{font-size:12px;color:var(--mid);margin-bottom:20px;}
-.pw-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:8px;}
-.pw-input:focus{border-color:var(--teal);}
-.pw-error{font-size:12px;color:#DC2626;margin-bottom:8px;min-height:18px;}
-.pw-submit{width:100%;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;}
-.pw-submit:hover{background:var(--teal-mid);}
-.pw-cancel{width:100%;padding:9px;background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;}
-
-/* 공고 추가 모달 */
+/* ── 공고 추가 모달 ── */
 .add-modal-bg{display:none;position:fixed;inset:0;z-index:10000;background:rgba(13,27,42,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
 .add-modal-bg.show{display:flex;}
-.add-modal{background:#fff;border-radius:12px;padding:28px 32px;width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.add-modal{background:#fff;border-radius:12px;padding:28px 32px;width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.3);}
 .add-modal-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px;}
-.add-modal-sub{font-size:12px;color:var(--mid);margin-bottom:22px;}
+.add-modal-sub{font-size:12px;color:var(--mid);margin-bottom:20px;}
 .add-field{margin-bottom:14px;}
 .add-label{font-size:11px;font-weight:700;color:var(--mid);letter-spacing:.5px;margin-bottom:5px;display:block;}
 .add-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;outline:none;}
@@ -199,22 +174,48 @@ body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid)
 .add-textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;outline:none;resize:vertical;min-height:80px;}
 .add-textarea:focus{border-color:var(--teal);}
 .add-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.add-icon-btn{display:flex;align-items:center;gap:10px;padding:9px 14px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;background:#fff;font-family:inherit;font-size:13px;width:100%;transition:border-color .15s;}
+.add-icon-btn:hover{border-color:var(--teal);}
+.add-icon-preview{font-size:22px;}
 .add-actions{display:flex;gap:8px;margin-top:20px;}
-.add-btn-confirm{flex:1;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
-.add-btn-confirm:hover{background:var(--teal-mid);}
+.add-btn-ok{flex:1;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.add-btn-ok:hover{background:var(--teal-mid);}
 .add-btn-cancel{padding:11px 18px;background:#fff;color:var(--mid);border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;}
 
-/* TOAST */
-.toast{position:fixed;bottom:80px;right:24px;z-index:10001;background:var(--ink);color:#fff;padding:12px 20px;border-radius:6px;font-size:13px;display:none;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+/* ── 관리자 ── */
+body.admin-mode [contenteditable="true"]{outline:2px dashed rgba(11,114,133,.4);border-radius:3px;cursor:text;}
+body.admin-mode [contenteditable="true"]:hover{outline:2px solid var(--teal);background:rgba(11,114,133,.03);}
+body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid);background:rgba(11,114,133,.05);}
+.admin-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1E293B;border-top:2px solid var(--teal);padding:10px 24px;align-items:center;gap:10px;flex-wrap:wrap;}
+.admin-bar.show{display:flex;}
+.admin-bar-label{font-size:12px;font-weight:700;color:var(--gold-light);letter-spacing:1px;text-transform:uppercase;}
+.admin-bar-tip{font-size:11px;color:rgba(255,255,255,.35);flex:1;}
+.admin-btn{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:5px;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;transition:all .15s;white-space:nowrap;}
+.abtn-add{background:#059669;color:#fff;}
+.abtn-add:hover{background:#047857;}
+.abtn-save{background:var(--teal);color:#fff;}
+.abtn-save:hover{background:var(--teal-mid);}
+.abtn-exit{background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);}
+.abtn-exit:hover{color:#fff;border-color:rgba(255,255,255,.5);}
+
+/* 비번 모달 */
+.pw-modal-bg{display:none;position:fixed;inset:0;z-index:10000;background:rgba(13,27,42,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.pw-modal-bg.show{display:flex;}
+.pw-modal{background:#fff;border-radius:10px;padding:32px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.pw-modal-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.pw-modal-sub{font-size:12px;color:var(--mid);margin-bottom:20px;}
+.pw-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:8px;}
+.pw-input:focus{border-color:var(--teal);}
+.pw-error{font-size:12px;color:var(--red);margin-bottom:8px;min-height:18px;}
+.pw-submit{width:100%;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+.pw-submit:hover{background:var(--teal-mid);}
+.pw-cancel{width:100%;padding:9px;background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;}
+
+.toast{position:fixed;bottom:80px;right:24px;z-index:10001;background:var(--ink);color:#fff;padding:12px 20px;border-radius:6px;font-size:13px;display:none;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.3);max-width:340px;}
 .toast.show{display:flex;}
 
-/* MOBILE */
-.mobile-topbar{display:none;}
 @media(max-width:768px){
   .sidebar{display:none;}
-  .mobile-topbar{display:flex;align-items:center;justify-content:space-between;background:var(--ink);padding:14px 20px;flex-shrink:0;}
-  .mobile-logo{font-size:14px;font-weight:700;color:#fff;}
-  .mobile-menu-btn{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;}
   .job-body{padding:24px 20px 40px;}
   .job-hero{padding:28px 20px 24px;}
   .duty-grid,.qual-grid,.benefit-kanban{grid-template-columns:1fr;}
@@ -225,7 +226,7 @@ body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid)
 <body>
 <div class="layout">
 
-<!-- ── SIDEBAR ── -->
+<!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sb-brand">
     <div class="sb-brand-mark">현성그룹</div>
@@ -249,12 +250,11 @@ body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid)
   </div>
 </div>
 
-<!-- ── MAIN ── -->
+<!-- MAIN -->
 <div class="main">
   <div class="topbar">
     <div class="topbar-breadcrumb">
-      현성그룹 채용
-      <span class="sep">›</span>
+      현성그룹 채용 <span class="sep">›</span>
       <span id="breadcrumb-current">채용 공고</span>
     </div>
     <div class="topbar-actions">
@@ -262,11 +262,97 @@ body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid)
       <a class="topbar-apply-btn" href="#" target="_blank" id="topbar-apply-link">입사 지원 →</a>
     </div>
   </div>
-  <div class="content" id="content-area"></div>
+  <div class="content" id="content-area">
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">공고를 불러오는 중...</div>
+    </div>
+  </div>
 </div>
-</div><!-- /layout -->
+</div>
 
-<!-- 비밀번호 모달 -->
+<!-- 아이콘 선택기 -->
+<div class="icon-picker" id="iconPicker">
+  <div class="icon-picker-box">
+    <div class="icon-picker-title">카테고리 아이콘 선택</div>
+    <div class="icon-picker-sub">공고 성격에 맞는 카테고리를 선택하세요</div>
+    <div class="icon-grid" id="iconGrid"></div>
+    <button class="icon-picker-cancel" onclick="closeIconPicker()">취소</button>
+  </div>
+</div>
+
+<!-- 공고 추가/복사 모달 -->
+<div class="add-modal-bg" id="addModal">
+  <div class="add-modal">
+    <div class="add-modal-title" id="addModalTitle">➕ 새 공고 추가</div>
+    <div class="add-modal-sub">기본 정보 입력 후, 상세 내용은 인라인 편집으로 수정하세요.</div>
+    <div class="add-field">
+      <label class="add-label">카테고리 아이콘 *</label>
+      <button class="add-icon-btn" onclick="openIconPicker()" id="iconBtn">
+        <span class="add-icon-preview" id="selectedIconEmoji">📋</span>
+        <span id="selectedIconLabel">클릭해서 선택</span>
+      </button>
+      <input type="hidden" id="f-icon" value="📋">
+      <input type="hidden" id="f-category" value="기타">
+    </div>
+    <div class="add-field">
+      <label class="add-label">공고 제목 *</label>
+      <input class="add-input" id="f-title" placeholder="예: 화장품 제형개발 경력 연구원">
+    </div>
+    <div class="add-row">
+      <div class="add-field">
+        <label class="add-label">부서</label>
+        <input class="add-input" id="f-dept" placeholder="예: R&D센터">
+      </div>
+      <div class="add-field">
+        <label class="add-label">경력 조건</label>
+        <input class="add-input" id="f-career" placeholder="예: 경력 3~15년">
+      </div>
+    </div>
+    <div class="add-row">
+      <div class="add-field">
+        <label class="add-label">근무지</label>
+        <input class="add-input" id="f-location" placeholder="예: 마곡 R&D센터">
+      </div>
+      <div class="add-field">
+        <label class="add-label">채용 상태</label>
+        <select class="add-input" id="f-status">
+          <option value="채용중">채용중</option>
+          <option value="마감">마감</option>
+          <option value="준비중">준비중</option>
+        </select>
+      </div>
+    </div>
+    <div class="add-row">
+      <div class="add-field">
+        <label class="add-label">마감일</label>
+        <input class="add-input" id="f-deadline" placeholder="예: 채용시마감 또는 2026.06.30">
+      </div>
+      <div class="add-field">
+        <label class="add-label">Tally 지원 URL</label>
+        <input class="add-input" id="f-tally" placeholder="https://tally.so/r/xxxxx" value="https://tally.so/r/vGJq08">
+      </div>
+    </div>
+    <div class="add-field">
+      <label class="add-label">담당 업무 (줄바꿈으로 구분)</label>
+      <textarea class="add-textarea" id="f-duties" placeholder="화장품 제형 연구·개발&#10;OEM/ODM 신제품 기획&#10;신원료 서칭 및 적용"></textarea>
+    </div>
+    <div class="add-field">
+      <label class="add-label">필수 요건 (줄바꿈으로 구분)</label>
+      <textarea class="add-textarea" id="f-req" placeholder="학사 이상&#10;경력 3년 이상&#10;해외여행 결격 사유 없는 자"></textarea>
+    </div>
+    <div class="add-field">
+      <label class="add-label">우대 사항 (줄바꿈으로 구분)</label>
+      <textarea class="add-textarea" id="f-pref" placeholder="관련 자격증 보유자&#10;유사업종 경험자"></textarea>
+    </div>
+    <div class="add-actions">
+      <button class="add-btn-cancel" onclick="closeAddModal()">취소</button>
+      <button class="add-btn-ok" onclick="confirmAddJob()" id="addConfirmBtn">✅ 공고 추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- 비번 모달 -->
 <div class="pw-modal-bg" id="pwModal">
   <div class="pw-modal">
     <div class="pw-modal-title">🔐 관리자 모드</div>
@@ -278,374 +364,283 @@ body.admin-mode [contenteditable="true"]:focus{outline:2px solid var(--teal-mid)
   </div>
 </div>
 
-<!-- 공고 추가/편집 모달 -->
-<div class="add-modal-bg" id="addModal">
-  <div class="add-modal">
-    <div class="add-modal-title" id="addModalTitle">➕ 새 공고 추가</div>
-    <div class="add-modal-sub">기본 정보를 입력하세요. 저장 후 상세 내용은 인라인 편집으로 수정하세요.</div>
-    <div class="add-field">
-      <label class="add-label">공고 제목 *</label>
-      <input class="add-input" id="f-title" placeholder="예: 화장품 제형개발 경력 연구원">
-    </div>
-    <div class="add-row">
-      <div class="add-field">
-        <label class="add-label">아이콘 (이모지)</label>
-        <input class="add-input" id="f-icon" placeholder="🧪" maxlength="4" style="font-size:20px;text-align:center;">
-      </div>
-      <div class="add-field">
-        <label class="add-label">채용 상태</label>
-        <select class="add-input" id="f-status">
-          <option value="open">채용중</option>
-          <option value="closed">마감</option>
-        </select>
-      </div>
-    </div>
-    <div class="add-row">
-      <div class="add-field">
-        <label class="add-label">부서 / 팀</label>
-        <input class="add-input" id="f-dept" placeholder="예: R&D센터 · 제형개발연구소">
-      </div>
-      <div class="add-field">
-        <label class="add-label">경력 조건</label>
-        <input class="add-input" id="f-career" placeholder="예: 경력 3~15년">
-      </div>
-    </div>
-    <div class="add-row">
-      <div class="add-field">
-        <label class="add-label">채용 배지 텍스트</label>
-        <input class="add-input" id="f-badge" placeholder="예: 🔬 경력 채용">
-      </div>
-      <div class="add-field">
-        <label class="add-label">Tally 지원 URL</label>
-        <input class="add-input" id="f-tally" placeholder="https://tally.so/r/xxxxx">
-      </div>
-    </div>
-    <div class="add-field">
-      <label class="add-label">상단 칩 (쉼표로 구분)</label>
-      <input class="add-input" id="f-chips" placeholder="📅 경력 3~15년, 🎓 학사 이상, 🏢 정규직, 💰 면접 후 협의">
-    </div>
-    <div class="add-field">
-      <label class="add-label">담당 업무 (줄바꿈으로 구분)</label>
-      <textarea class="add-textarea" id="f-duties" placeholder="화장품 제형 연구·개발&#10;OEM/ODM 신제품 기획&#10;신원료 서칭 및 적용 실험"></textarea>
-    </div>
-    <div class="add-field">
-      <label class="add-label">필수 요건 (줄바꿈으로 구분)</label>
-      <textarea class="add-textarea" id="f-req" placeholder="학사 이상 (유관 전공)&#10;경력 3년 이상&#10;해외여행 결격 사유 없는 자"></textarea>
-    </div>
-    <div class="add-field">
-      <label class="add-label">우대 사항 (줄바꿈으로 구분)</label>
-      <textarea class="add-textarea" id="f-pref" placeholder="OEM/ODM 경험자&#10;관련 자격증 보유자"></textarea>
-    </div>
-    <div class="add-actions">
-      <button class="add-btn-cancel" onclick="closeAddModal()">취소</button>
-      <button class="add-btn-confirm" onclick="confirmAddJob()">✅ 공고 추가</button>
-    </div>
-  </div>
-</div>
-
 <!-- 관리자 바 -->
 <div class="admin-bar" id="adminBar">
   <span class="admin-bar-label">✏️ 편집 모드</span>
   <span class="admin-bar-tip">텍스트 클릭 → 직접 수정 · 사이드바에서 공고 복사/삭제</span>
-  <button class="admin-btn admin-btn-add" onclick="openAddModal()">➕ 공고 추가</button>
-  <button class="admin-btn admin-btn-save" onclick="saveFile()">⬇ HTML 저장</button>
-  <button class="admin-btn admin-btn-exit" onclick="exitAdmin()">편집 종료</button>
+  <button class="admin-btn abtn-add" onclick="openAddModal()">➕ 공고 추가</button>
+  <button class="admin-btn abtn-save" onclick="saveToSheet()">☁️ 저장 (시트 반영)</button>
+  <button class="admin-btn abtn-exit" onclick="exitAdmin()">편집 종료</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════
-// ★ 설정
-// ════════════════════════════════════════
-const ADMIN_PASSWORD = '1234'; // 원하는 비밀번호로 변경하세요
+// ══════════════════════════════════════════
+// ★ 설정 (여기만 수정)
+// ══════════════════════════════════════════
+const ADMIN_PASSWORD = '1234';
+const SHEET_ID = '1oL1N5CsLi6OOi98uoPWIGa_zHzbMF7nmhteyHqtqUvY';
+const SHEET_LIST_NAME  = '공고목록';   // 공고 목록 탭
+const SHEET_DETAIL_NAME = '공고상세';  // 상세내용 저장 탭 (자동 생성)
 
-// ════════════════════════════════════════
-// ★ 공고 데이터 (여기서 모든 공고를 관리)
-// ════════════════════════════════════════
-let JOBS = [
-  {
-    id: 'job_1',
-    icon: '🧪',
-    title: '화장품 제형개발 경력 연구원',
-    dept: '㈜다산씨엔텍 R&D센터 · 제형개발연구소',
-    career: '경력 3~15년',
-    status: 'open',
-    badge: '🔬 경력 채용',
-    tallyUrl: 'https://tally.so/r/vGJq08',
-    chips: ['📅 경력 3~15년','🎓 학사 이상','🏢 정규직','💰 면접 후 협의','📍 마곡 R&D센터 (5호선)','⏰ 주5일 09:00–18:00'],
-    infoRows: [
-      ['📌 공고 상태','<span class="info-badge green">🟢 채용 중</span>'],
-      ['👤 모집 구분','<span class="info-badge">경력직</span><span class="info-badge">3 ~ 15년</span>'],
-      ['🎓 학력','학사 이상 (화학·화장품공학·생명과학·약학 등)'],
-      ['🏢 고용형태','<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 후 전환</span>'],
-      ['💰 급여','<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지','서울 강서구 마곡중앙4로 46 (다산 R&D센터)'],
-      ['⏰ 근무시간','주 5일, 09:00~18:00 (탄력근무 운영)'],
-      ['🚇 교통','5호선 마곡역 800m 이내 · 통근버스(김포) 운영'],
-      ['📅 마감일','<span class="info-badge gold">채용 시 마감 (조기 마감 가능)</span>'],
-      ['📞 문의','현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 R&D 기업</strong>으로, 2021년 마곡에 최첨단 R&D센터를 완공했습니다. 자사 브랜드 루비셀(Ruby-Cell)은 6년 연속 몽드셀렉션 Grand Gold를 수상했으며, 현재 필리핀 법인 설립 등 글로벌 시장을 확장하고 있습니다.',
-    duties: ['화장품 제형 연구·개발 (스킨케어 / 헤어 / 바디 / 클렌저)','OEM/ODM 신제품 기획 및 처방 개발','국내외 신원료 서칭 및 적용 실험·평가','글로벌 뷰티 트렌드 분석 및 신제품 컨셉 도출','처방 안정성·피부 적합성 평가','연구 관련 문서 작성 및 데이터 관리'],
-    required: ['학사 이상 (화학·화장품공학·생명과학·약학 등 유관 전공)','화장품 제형개발 유관 경력 3년 이상 ~ 15년','스킨케어/헤어/바디/클렌저 제형 실무 경험','해외여행 결격 사유 없는 자'],
-    preferred: ['OEM/ODM 제형 개발 직접 수행 경력자','원료사·화장품사 연구소 근무 경험자','화장품조제관리사 등 자격증 보유자','인근 거주자 (마곡·김포 생활권)'],
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장근무 수당 지급','🍱 식대 급여 포함']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차 (평균 10~15일)','🏨 대명리조트·소노호텔 이용','🔄 장기근속 Refresh 휴가','🍼 출산휴가 / 육아휴직','🌅 명절 전일 조기퇴근']},
-      {title:'📚 교육 & 성장', items:['🎓 신입사원 OJT 교육','📖 도서 구매비 지원','🗣 어학비 지원','💡 직무 교육비 지원','🧑‍💼 청년내일채움공제']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','☕ 사내 카페테리아','🍪 간식·음료 무료 제공','🚗 주차장 무료 제공','🚌 통근버스 운영 (김포)']},
-    ],
-    cultureNote: '내근 100% · 자율 복장 · 분기 1회 회식 · 대부분 20~30대 · 야근 거의 없음',
+// ══════════════════════════════════════════
+// 카테고리 → 아이콘 매핑
+// ══════════════════════════════════════════
+const CATEGORY_MAP = {
+  '인사·총무':   { emoji: '👔', badge: '👔 인사·총무' },
+  '영업':        { emoji: '💼', badge: '💼 영업 채용' },
+  '해외영업':    { emoji: '🌐', badge: '🌐 해외영업 채용' },
+  '제형개발연구':{ emoji: '🧪', badge: '🧪 연구 채용' },
+  '줄기세포연구':{ emoji: '🔬', badge: '🔬 연구 채용' },
+  '피부임상연구':{ emoji: '🩺', badge: '🩺 임상연구 채용' },
+  '마케팅':      { emoji: '📣', badge: '📣 마케팅 채용' },
+  '디자인':      { emoji: '🎨', badge: '🎨 디자인 채용' },
+  '재무·회계':   { emoji: '📊', badge: '📊 재무·회계 채용' },
+  '생산·제조':   { emoji: '🏭', badge: '🏭 생산 채용' },
+  '품질경영':    { emoji: '✅', badge: '✅ 품질 채용' },
+  '기타':        { emoji: '📋', badge: '📋 채용' },
+};
+
+// ══════════════════════════════════════════
+// 카테고리별 기본 템플릿
+// ══════════════════════════════════════════
+const TEMPLATES = {
+  '제형개발연구': {
+    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 R&D 기업</strong>으로, 2021년 마곡에 최첨단 R&D센터를 완공했습니다.',
+    duties: ['화장품 제형 연구·개발 (스킨케어 / 헤어 / 바디 / 클렌저)','OEM/ODM 신제품 기획 및 처방 개발','국내외 신원료 서칭 및 적용 실험·평가','글로벌 뷰티 트렌드 분석 및 신제품 컨셉 도출','처방 안정성·피부 적합성 평가'],
+    required: ['학사 이상 (화학·화장품공학·생명과학·약학 등 유관 전공)','해외여행 결격 사유 없는 자'],
+    preferred: ['OEM/ODM 제형 개발 직접 수행 경력자','화장품조제관리사 등 자격증 보유자','인근 거주자 (마곡·김포 생활권)'],
   },
-  {
-    id: 'job_2',
-    icon: '🔬',
-    title: '줄기세포 연구원',
-    dept: '㈜다산씨엔텍 R&D센터 · 줄기세포연구소',
-    career: '신입~경력 3년',
-    status: 'open',
-    badge: '🔬 신입·경력 채용',
-    tallyUrl: 'https://tally.so/r/vGJq08',
-    chips: ['📅 신입~경력 3년','🎓 초대졸 이상','🏢 정규직','💰 면접 후 협의','📍 마곡 R&D센터 (5호선)','⏰ 주5일 09:00–18:00'],
-    infoRows: [
-      ['📌 공고 상태','<span class="info-badge green">🟢 채용 중</span>'],
-      ['👤 모집 구분','<span class="info-badge">신입·경력</span><span class="info-badge">1~3년</span>'],
-      ['🎓 학력','초대졸 이상 (생명과학·화학·화장품 등 유관 전공)'],
-      ['🏢 고용형태','<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 후 전환</span>'],
-      ['💰 급여','<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지','서울 강서구 마곡중앙4로 46 (다산 R&D센터)'],
-      ['⏰ 근무시간','주 5일, 09:00~18:00'],
-      ['📅 마감일','<span class="info-badge gold">채용 시 마감 (조기 마감 가능)</span>'],
-      ['📞 문의','현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>줄기세포 피부과학을 선도하는 CGMP 인증 R&D 기업</strong>입니다. 줄기세포연구소에서 줄기세포 배양 및 배양액 생산, 화장품 원료 제조를 담당하는 연구원을 모집합니다.',
-    duties: ['줄기세포 배양 및 배양액 생산','줄기세포 배양액 생산시설 유지관리','화장품 원료(줄기세포배양액·식물·미생물) 제조','원료 품질관리 시험 수행'],
-    required: ['초대졸 이상','유관업무 경력 1~3년','해외여행 결격 사유 없는 자'],
-    preferred: ['줄기세포 배양 및 배양액 생산 경험자','화장품 원료 제조관리 경험자','컴퓨터 활용능력 우수자','영어 회화 능통자'],
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장수당 지급']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차','🏨 대명리조트 이용','🔄 장기근속 Refresh','🍼 출산·육아휴직']},
-      {title:'📚 교육 & 성장', items:['🎓 OJT 교육','📖 도서 구매비','💡 직무 교육비']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','☕ 사내 카페테리아','🌿 사내 정원','🚗 주차 무료']},
-    ],
-    cultureNote: '내근 100% · 자율 복장 · 야근 거의 없음',
+  '줄기세포연구': {
+    companyDesc: '다산씨엔텍은 <strong>줄기세포 피부과학을 선도하는 CGMP 인증 R&D 기업</strong>입니다.',
+    duties: ['줄기세포 배양 및 배양액 생산','줄기세포 배양액 생산시설 유지관리','화장품 원료 제조','원료 품질관리 시험 수행'],
+    required: ['초대졸 이상','해외여행 결격 사유 없는 자'],
+    preferred: ['줄기세포 배양 경험자','화장품 원료 제조관리 경험자','영어 회화 능통자'],
   },
-  {
-    id: 'job_3',
-    icon: '📣',
-    title: '마케팅팀',
-    dept: '㈜다산씨엔텍 · 마케팅팀',
-    career: '신입~경력 3년',
-    status: 'open',
-    badge: '📣 신입·경력 채용',
-    tallyUrl: 'https://tally.so/r/vGJq08',
-    chips: ['📅 신입~경력 3년','🎓 초대졸 이상','🏢 정규직 · 주임~대리','💰 면접 후 협의','📍 마곡 R&D센터 (5호선)','⏰ 주5일 09:00–18:00'],
-    infoRows: [
-      ['📌 공고 상태','<span class="info-badge green">🟢 채용 중</span>'],
-      ['👤 모집 구분','<span class="info-badge">신입·경력</span><span class="info-badge">1~3년</span>'],
-      ['🎓 학력','초대졸 이상'],
-      ['🏢 고용형태','<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 · 주임~대리</span>'],
-      ['💰 급여','<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지','서울 강서구 마곡중앙4로 46 (다산 R&D센터)'],
-      ['⏰ 근무시간','주 5일, 09:00~18:00'],
-      ['📅 마감일','<span class="info-badge gold">채용 시 마감 (조기 마감 가능)</span>'],
-      ['📞 문의','현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 R&D 기업</strong>으로, 자사 브랜드 루비셀(Ruby-Cell)의 마케팅을 함께 이끌어갈 인재를 모집합니다.',
-    duties: ['바이럴 콘텐츠 제작 · KOL 섭외 및 관리 · 서포터즈 관리','SNS 콘텐츠 기획 및 이벤트 관리 (인스타그램)','숏폼 콘텐츠 기획 · 아이데이션 및 제작 핸들링','뷰티 크리에이터 섭외 및 PPL 진행','퍼포먼스 마케팅 또는 DA 광고 보조','콘텐츠 기획 및 카피라이팅 · 기타 마케팅 보조'],
-    required: ['초대졸 이상','신입 ~ 경력 3년','포트폴리오 필수 제출'],
-    preferred: ['마케팅·광고·커뮤니케이션 경험자','SNS 채널 운영 및 콘텐츠 기획 경험','퍼포먼스 마케팅·디지털 광고 플랫폼 운영 경험 (메타·구글 등)','화장품 브랜드 또는 소비재(FMCG) 마케팅 경험자','디자인툴 Photoshop/Illustrator/Figma 경력자','영상 편집 가능자'],
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장수당 지급','🍱 식대 포함']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차 (평균 10~15일)','🏨 대명리조트 이용','🔄 장기근속 Refresh','🍼 출산·육아휴직']},
-      {title:'📚 교육 & 성장', items:['🎓 OJT 교육','📖 도서 구매비','🗣 어학비 지원','💡 직무 교육비']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','☕ 사내 카페테리아','🚗 주차 무료','🚌 통근버스(김포)','🧴 자사 제품 할인']},
-    ],
-    cultureNote: '내근 100% · 자율 복장 · 분기 1회 회식 · 야근 거의 없음',
+  '마케팅': {
+    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 R&D 기업</strong>으로, 자사 브랜드 루비셀(Ruby-Cell)의 마케팅을 이끌어갈 인재를 모집합니다.',
+    duties: ['바이럴 콘텐츠 제작 · KOL 섭외 및 관리','SNS 콘텐츠 기획 및 이벤트 관리','숏폼 콘텐츠 기획 및 제작','퍼포먼스 마케팅 또는 DA 광고'],
+    required: ['초대졸 이상','포트폴리오 필수 제출'],
+    preferred: ['SNS 채널 운영 및 콘텐츠 기획 경험','디지털 광고 플랫폼 운영 경험 (메타·구글)','영상 편집 가능자'],
   },
-  {
-    id: 'job_4',
-    icon: '🏭',
-    title: '생산팀 (제조)',
-    dept: '㈜다산씨엔텍 · 생산팀',
-    career: '경력 1~3년',
-    status: 'open',
-    badge: '🏭 경력 채용',
-    tallyUrl: 'https://tally.so/r/vGJq08',
-    chips: ['📅 경력 1~3년','🎓 고졸 이상','🏢 정규직','💰 면접 후 협의','📍 경기 김포시','⏰ 주5일 09:00–18:00'],
-    infoRows: [
-      ['📌 공고 상태','<span class="info-badge green">🟢 채용 중</span>'],
-      ['👤 모집 구분','<span class="info-badge">경력직</span><span class="info-badge">1~3년</span>'],
-      ['🎓 학력','고졸 이상'],
-      ['🏢 고용형태','<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 후 전환</span>'],
-      ['💰 급여','<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지','경기도 김포시 양촌읍 삼도로 98 (주)다산씨엔텍'],
-      ['⏰ 근무시간','주 5일, 09:00~18:00'],
-      ['📅 마감일','<span class="info-badge gold">채용 시 마감 (조기 마감 가능)</span>'],
-      ['📞 문의','현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 제조 기업</strong>입니다. 김포 생산공장에서 화장품 제조 및 제조실을 관리할 생산팀 인재를 모집합니다.',
+  '생산·제조': {
+    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 제조 기업</strong>입니다.',
     duties: ['화장품 제조 및 칭량','제조실 관리','CGMP 관리 기준 준수'],
-    required: ['고졸 이상','경력 1년 ~ 3년'],
+    required: ['고졸 이상'],
     preferred: ['화학/화장품 전공자','동종업계 근무 경험자','인근 거주자 (김포 생활권)'],
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장수당 지급']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차 (평균 10~15일)','🏨 대명리조트 이용','🔄 장기근속 Refresh','🍼 출산·육아휴직']},
-      {title:'🍽 식사 & 편의', items:['🍱 중식 무료 제공','🚌 통근버스 운영','🚗 주차 무료']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','🚫 야근 거의 없음','🧴 자사 제품 할인']},
-    ],
-    cultureNote: '내근 100% · 자율 복장 · 대부분 30~40대 · 야근 거의 없음',
   },
-  {
-    id: 'job_5',
-    icon: '✅',
-    title: '품질경영팀 (품질파트)',
-    dept: '㈜다산씨엔텍 · 품질경영팀 품질파트',
-    career: '경력 4~10년',
-    status: 'open',
-    badge: '✅ 경력 채용',
-    tallyUrl: 'https://tally.so/r/vGJq08',
-    chips: ['📅 경력 4~10년','🎓 학력무관','🏢 정규직','💰 면접 후 협의','📍 경기 김포시','⏰ 주5일 09:00–18:00'],
-    infoRows: [
-      ['📌 공고 상태','<span class="info-badge green">🟢 채용 중</span>'],
-      ['👤 모집 구분','<span class="info-badge">경력직</span><span class="info-badge">4~10년</span>'],
-      ['🎓 학력','학력무관'],
-      ['🏢 고용형태','<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 후 전환</span>'],
-      ['💰 급여','<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지','경기도 김포시 양촌읍 삼도로 98 (주)다산씨엔텍'],
-      ['⏰ 근무시간','주 5일, 09:00~18:00'],
-      ['📅 마감일','<span class="info-badge gold">채용 시 마감 (조기 마감 가능)</span>'],
-      ['📞 문의','현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>CGMP·ISO 22716 인증 화장품 제조 기업</strong>입니다. 품질시험 및 해외 인허가 대응을 담당할 품질파트 인재를 모집합니다.',
-    duties: ['원부자재·반완제품 품질 시험 수행 및 관리','시험 결과 기록 및 기준 적합여부 판정','화장품 관련 법규 및 품질기준 준수 (CGMP, ISO 22716)','내부 감사 및 외부 점검 대응 지원','해외 수출 서류 대응 (FDA, CPNP, NMPA 등)','표시기재·문안 검토 및 서류 작성·데이터 관리'],
-    required: ['학력무관','경력 4년 ~ 10년'],
-    preferred: ['화장품 제조업 경험자','OEM/ODM 제조사 근무 경험자','해외 인허가 대응 경험자 (FDA·CPNP·NMPA)','CGMP/ISO 22716 인증 심사 경험자','ERP 경험자','인근 거주자 (김포 생활권)'],
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장수당 지급']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차 (평균 10~15일)','🏨 대명리조트 이용','🔄 장기근속 Refresh','🍼 출산·육아휴직']},
-      {title:'🍽 식사 & 편의', items:['🍱 중식 무료 제공','🚌 통근버스 운영','🚗 주차 무료']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','🚫 야근 거의 없음','🧴 자사 제품 할인']},
-    ],
-    cultureNote: '내근 100% · 자율 복장 · 대부분 30~40대 · 야근 거의 없음',
+  '품질경영': {
+    companyDesc: '다산씨엔텍은 <strong>CGMP·ISO 22716 인증 화장품 제조 기업</strong>입니다.',
+    duties: ['원부자재·반완제품 품질 시험 수행 및 관리','화장품 관련 법규 및 품질기준 준수 (CGMP, ISO 22716)','내부 감사 및 외부 점검 대응 지원'],
+    required: ['학력무관'],
+    preferred: ['화장품 제조업 경험자','CGMP/ISO 22716 인증 심사 경험자','인근 거주자 (김포 생활권)'],
   },
-  {
-    id: 'job_6',
-    icon: '✅',
-    title: '품질경영팀 (관리파트)',
-    dept: '㈜다산씨엔텍 · 품질경영팀 관리파트',
-    career: '경력 1~5년',
-    status: 'open',
-    badge: '✅ 경력 채용',
-    tallyUrl: 'https://tally.so/r/vGJq08',
-    chips: ['📅 경력 1~5년','🎓 학력무관','🏢 정규직 · 주임~대리','💰 면접 후 협의','📍 경기 김포시','⏰ 주5일 09:00–18:00'],
-    infoRows: [
-      ['📌 공고 상태','<span class="info-badge green">🟢 채용 중</span>'],
-      ['👤 모집 구분','<span class="info-badge">경력직</span><span class="info-badge">1~5년</span>'],
-      ['🎓 학력','학력무관'],
-      ['🏢 고용형태','<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 · 주임~대리</span>'],
-      ['💰 급여','<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지','경기도 김포시 양촌읍 삼도로 98 (주)다산씨엔텍'],
-      ['⏰ 근무시간','주 5일, 09:00~18:00'],
-      ['📅 마감일','<span class="info-badge gold">2026.06.06 마감</span>'],
-      ['📞 문의','현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 제조 기업</strong>입니다. 구매·생산계획 및 재고 관리를 담당할 관리파트 인재를 모집합니다.',
-    duties: ['구매 및 생산 계획 수립','생산 실적 정리','재고 파악 및 관리'],
-    required: ['학력무관','경력 1년 ~ 5년'],
-    preferred: ['화장품 제조업 경험자','품질 경력자','CGMP 경험자','인근 거주자 (김포 생활권)'],
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장수당 지급']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차 (평균 5~10일)','🏨 대명리조트 이용','🔄 장기근속 Refresh','🍼 출산·육아휴직']},
-      {title:'🍽 식사 & 편의', items:['🍱 급여 외 식대 제공','🚌 통근버스 운영','🚗 주차 무료']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','🚫 야근 거의 없음','🧴 자사 제품 할인']},
-    ],
-    cultureNote: '내근 100% · 자율 복장 · 분기 1회 회식 · 대부분 30~40대 · 야근 거의 없음',
+  'default': {
+    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 R&D 기업</strong>으로 글로벌 시장을 확장하고 있습니다.',
+    duties: ['담당 업무를 입력하세요','업무 내용 2','업무 내용 3'],
+    required: ['지원 자격을 입력하세요'],
+    preferred: ['우대 사항을 입력하세요'],
   },
+};
+
+const DEFAULT_BENEFITS = [
+  {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브','🌙 연장수당 지급']},
+  {title:'🏖 휴가 & 여가', items:['📅 자유 연차','🏨 대명리조트·소노호텔 이용','🔄 장기근속 Refresh 휴가','🍼 출산휴가 / 육아휴직']},
+  {title:'📚 교육 & 성장', items:['🎓 신입사원 OJT 교육','📖 도서 구매비 지원','🗣 어학비 지원','💡 직무 교육비 지원']},
+  {title:'🏢 근무 환경', items:['👔 자율 복장','☕ 사내 카페테리아','🚗 주차장 무료 제공','🚌 통근버스 운영 (김포)']},
 ];
 
-// ════════════════════════════════════════
-// 렌더링 함수들
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
+// 상태 변수
+// ══════════════════════════════════════════
+let JOBS = [];
 let currentJobId = null;
+let copySourceId = null;
+let selectedIcon = { emoji: '📋', category: '기타' };
 
+// 상세 내용 저장소 (localStorage)
+const DETAIL_KEY = 'careers_hub_details_v1';
+function loadDetails() { try { return JSON.parse(localStorage.getItem(DETAIL_KEY) || '{}'); } catch(e) { return {}; } }
+function saveDetails(d) { localStorage.setItem(DETAIL_KEY, JSON.stringify(d)); }
+
+// ══════════════════════════════════════════
+// 구글 시트에서 공고목록 불러오기
+// ══════════════════════════════════════════
+function loadFromSheets() {
+  document.getElementById('loadingScreen').style.display = 'flex';
+  const old = document.getElementById('gviz-job-script');
+  if (old) old.remove();
+
+  window.__jobListCallback = function(json) {
+    clearTimeout(window.__jobTimeout);
+    try {
+      const cols = json.table.cols.map(c => (c.label || '').trim());
+      const idx = n => cols.findIndex(c => c === n);
+      const iOrder    = idx('공고순서');
+      const iTitle    = idx('공고명');
+      const iCat      = idx('카테고리');
+      const iDept     = idx('부서');
+      const iCareer   = idx('경력조건');
+      const iLocation = idx('근무지');
+      const iStatus   = idx('상태');
+      const iTally    = idx('Tally_URL');
+      const iDeadline = idx('마감일');
+      const iShow     = idx('노출여부');
+
+      const v = (row, i) => (i >= 0 && row.c && row.c[i]) ? String(row.c[i].v ?? row.c[i].f ?? '').trim() : '';
+
+      const details = loadDetails();
+
+      JOBS = (json.table.rows || [])
+        .filter(row => v(row, iShow).toUpperCase() === 'Y' && v(row, iTitle))
+        .sort((a, b) => parseInt(v(a, iOrder)) - parseInt(v(b, iOrder)))
+        .map((row, ri) => {
+          const title    = v(row, iTitle);
+          const category = v(row, iCat) || '기타';
+          const cat      = CATEGORY_MAP[category] || CATEGORY_MAP['기타'];
+          const tmpl     = TEMPLATES[category] || TEMPLATES['default'];
+          const id       = 'job_' + ri;
+          const saved    = details[title] || {};
+
+          return {
+            id,
+            title,
+            category,
+            icon:        cat.emoji,
+            badge:       cat.badge,
+            dept:        v(row, iDept),
+            career:      v(row, iCareer),
+            location:    v(row, iLocation),
+            status:      v(row, iStatus) || '채용중',
+            tallyUrl:    v(row, iTally) || 'https://tally.so/r/vGJq08',
+            deadline:    v(row, iDeadline) || '채용시마감',
+            // 상세 내용: 저장된 것 우선, 없으면 템플릿
+            companyDesc: saved.companyDesc || tmpl.companyDesc,
+            duties:      saved.duties      || [...tmpl.duties],
+            required:    saved.required    || [...tmpl.required],
+            preferred:   saved.preferred   || [...tmpl.preferred],
+            benefits:    saved.benefits    || DEFAULT_BENEFITS.map(b => ({...b, items:[...b.items]})),
+            cultureNote: saved.cultureNote || '내근 100% · 자율 복장 · 야근 거의 없음',
+          };
+        });
+
+      document.getElementById('loadingScreen').style.display = 'none';
+      renderAll();
+    } catch(e) {
+      showError('데이터 파싱 오류: ' + e.message);
+    }
+  };
+
+  window.__jobTimeout = setTimeout(() => {
+    showError('시트 연결 실패. 구글 시트 공유 설정(링크 있는 사용자 - 뷰어)을 확인하세요.');
+  }, 10000);
+
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_LIST_NAME)}&callback=__jobListCallback`;
+  const script = document.createElement('script');
+  script.id = 'gviz-job-script';
+  script.src = url;
+  script.onerror = () => showError('시트 연결 실패. 공유 설정을 확인하세요.');
+  document.head.appendChild(script);
+}
+
+function showError(msg) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  let errEl = document.getElementById('errorScreen');
+  if (!errEl) {
+    errEl = document.createElement('div');
+    errEl.id = 'errorScreen';
+    errEl.className = 'error-screen';
+    errEl.style.display = 'flex';
+    errEl.innerHTML = `<div class="error-box"><div class="error-title">⚠️ 연결 오류</div><div class="error-desc" id="errorMsg"></div><button onclick="loadFromSheets()" style="margin-top:14px;padding:9px 20px;background:var(--teal);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;">🔄 다시 시도</button></div>`;
+    document.getElementById('content-area').appendChild(errEl);
+  }
+  errEl.style.display = 'flex';
+  document.getElementById('errorMsg').textContent = msg;
+}
+
+// ══════════════════════════════════════════
+// 렌더링
+// ══════════════════════════════════════════
 function renderAll() {
   renderSidebar();
   renderPanels();
-  // 첫 번째 공고 자동 선택
-  if (JOBS.length > 0) {
-    const first = JOBS[0].id;
-    if (currentJobId && JOBS.find(j => j.id === currentJobId)) {
-      showJob(currentJobId);
-    } else {
-      showJob(first);
-    }
-  }
+  const target = currentJobId && JOBS.find(j => j.id === currentJobId)
+    ? currentJobId : JOBS[0]?.id;
+  if (target) showJob(target);
 }
 
 function renderSidebar() {
   const container = document.getElementById('sidebar-jobs');
-  container.innerHTML = JOBS.map(job => `
-    <div class="sb-job ${job.id === currentJobId ? 'active' : ''}" id="sb-${job.id}" onclick="showJob('${job.id}')">
+  container.innerHTML = JOBS.map(job => {
+    const badgeCls = job.status === '마감' ? 'closed' : job.status === '준비중' ? 'pending' : '';
+    return `
+    <div class="sb-job" id="sb-${job.id}" onclick="showJob('${job.id}')">
       <div class="sb-job-head">
         <div class="sb-job-icon">${job.icon}</div>
         <div class="sb-job-info">
           <div class="sb-job-title">${job.title}</div>
-          <div class="sb-job-meta">${job.dept.split('·')[0].trim()} · ${job.career}</div>
+          <div class="sb-job-meta">${job.dept} · ${job.career}</div>
         </div>
-        <div class="sb-job-badge ${job.status === 'closed' ? 'closed' : ''}">${job.status === 'open' ? '채용중' : '마감'}</div>
+        <div class="sb-job-badge ${badgeCls}">${job.status}</div>
       </div>
       <div class="sb-job-actions">
-        <button class="sb-action-btn sb-action-copy" onclick="copyJob('${job.id}',event)" title="복사">📋</button>
-        <button class="sb-action-btn sb-action-del" onclick="deleteJob('${job.id}',event)" title="삭제">🗑</button>
+        <button class="sb-act sb-act-copy" onclick="copyJob('${job.id}',event)" title="복사">📋</button>
+        <button class="sb-act sb-act-del"  onclick="deleteJob('${job.id}',event)" title="삭제">🗑</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderPanels() {
   const content = document.getElementById('content-area');
-  content.innerHTML = JOBS.map(job => renderJobPanel(job)).join('');
+  // 로딩·에러 화면 외 패널만 교체
+  const existing = content.querySelectorAll('.job-panel');
+  existing.forEach(el => el.remove());
+  const frag = document.createDocumentFragment();
+  JOBS.forEach(job => {
+    const div = document.createElement('div');
+    div.innerHTML = buildPanel(job);
+    frag.appendChild(div.firstElementChild);
+  });
+  content.appendChild(frag);
 }
 
-function renderJobPanel(job) {
+function buildPanel(job) {
   const isAdmin = document.body.classList.contains('admin-mode');
-  const editable = isAdmin ? 'contenteditable="true" spellcheck="false"' : '';
+  const ce = isAdmin ? 'contenteditable="true" spellcheck="false"' : '';
 
-  const infoRows = job.infoRows.map(([label, val]) =>
-    `<tr><td>${label}</td><td ${editable}>${val}</td></tr>`
-  ).join('');
+  const chips = ['📅 ' + job.career, '🏢 정규직', '💰 면접 후 협의', '📍 ' + job.location, '⏰ 주5일 09:00–18:00']
+    .map(c => `<span class="chip">${c}</span>`).join('');
 
-  const chips = job.chips.map(c => `<span class="chip">${c}</span>`).join('');
+  const infoRows = [
+    ['📌 공고 상태', job.status === '채용중' ? '<span class="info-badge green">🟢 채용 중</span>' : `<span class="info-badge">${job.status}</span>`],
+    ['👤 모집 구분', `<span class="info-badge">${job.career}</span>`],
+    ['🏢 고용형태', '<span class="info-badge green">정규직</span> <span style="font-size:12px;color:var(--mid);">3개월 수습 후 전환</span>'],
+    ['💰 급여', '<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
+    ['📍 근무지', job.location],
+    ['⏰ 근무시간', '주 5일, 09:00~18:00'],
+    ['📅 마감일', `<span class="info-badge gold">${job.deadline}</span>`],
+    ['📞 문의', '현성그룹 인사팀 · 070-4603-1571'],
+  ].map(([k, v]) => `<tr><td>${k}</td><td ${ce}>${v}</td></tr>`).join('');
 
-  const duties = job.duties.map(d =>
-    `<div class="duty-item" ${editable}>${d}</div>`
-  ).join('');
-
-  const reqItems = job.required.map(r =>
-    `<div class="qual-item"><div class="qdot"></div><span ${editable}>${r}</span></div>`
-  ).join('');
-
-  const prefItems = job.preferred.map(p =>
-    `<div class="qual-item"><div class="qdot"></div><span ${editable}>${p}</span></div>`
-  ).join('');
-
-  const benefitCols = job.benefits.map(b =>
+  const duties = (job.duties || []).map(d => `<div class="duty-item" ${ce}>${d}</div>`).join('');
+  const req    = (job.required || []).map(r => `<div class="qual-item"><div class="qdot"></div><span ${ce}>${r}</span></div>`).join('');
+  const pref   = (job.preferred || []).map(p => `<div class="qual-item"><div class="qdot"></div><span ${ce}>${p}</span></div>`).join('');
+  const bens   = (job.benefits || DEFAULT_BENEFITS).map(b =>
     `<div class="benefit-col">
-      <div class="bc-title" ${editable}>${b.title}</div>
-      ${b.items.map(i => `<div class="bc-card" ${editable}>${i}</div>`).join('')}
-    </div>`
-  ).join('');
+      <div class="bc-title" ${ce}>${b.title}</div>
+      ${(b.items || []).map(i => `<div class="bc-card" ${ce}>${i}</div>`).join('')}
+    </div>`).join('');
 
   return `
   <div class="job-panel" id="${job.id}" data-job-id="${job.id}">
     <div class="job-hero">
       <div class="job-hero-orb1"></div><div class="job-hero-orb2"></div>
-      <div class="job-hero-badge" ${editable}>${job.badge}</div>
-      <div class="job-hero-dept" ${editable}>${job.dept}</div>
-      <h1 class="job-hero-title" ${editable}>${job.title}</h1>
-      <div class="job-hero-chips" ${editable}>${chips}</div>
+      <div class="job-hero-badge" ${ce}>${job.badge}</div>
+      <div class="job-hero-dept" ${ce}>${job.dept}</div>
+      <h1 class="job-hero-title" ${ce}>${job.title}</h1>
+      <div class="job-hero-chips">${chips}</div>
     </div>
     <div class="job-body">
       <div class="jb-section">
@@ -654,7 +649,7 @@ function renderJobPanel(job) {
       </div>
       <div class="jb-section">
         <div class="jb-hd"><div class="jb-bar"></div><h2 class="jb-title">회사 소개</h2></div>
-        <div class="callout"><div class="callout-icon">✨</div><div ${editable}>${job.companyDesc}</div></div>
+        <div class="callout"><div class="callout-icon">✨</div><div ${ce}>${job.companyDesc}</div></div>
       </div>
       <div class="jb-section">
         <div class="jb-hd"><div class="jb-bar"></div><h2 class="jb-title">담당 업무</h2></div>
@@ -663,28 +658,30 @@ function renderJobPanel(job) {
       <div class="jb-section">
         <div class="jb-hd"><div class="jb-bar"></div><h2 class="jb-title">지원 자격</h2></div>
         <div class="qual-grid">
-          <div class="qual-box"><div class="qual-box-head req">필수 요건</div><div class="qual-box-body">${reqItems}</div></div>
-          <div class="qual-box"><div class="qual-box-head pref">우대 사항</div><div class="qual-box-body">${prefItems}</div></div>
+          <div class="qual-box"><div class="qual-box-head req">필수 요건</div><div class="qual-box-body">${req}</div></div>
+          <div class="qual-box"><div class="qual-box-head pref">우대 사항</div><div class="qual-box-body">${pref}</div></div>
         </div>
       </div>
       <div class="jb-section">
         <div class="jb-hd"><div class="jb-bar"></div><h2 class="jb-title">복리후생</h2></div>
-        <div class="benefit-kanban">${benefitCols}</div>
-        <div class="culture-note"><span>💬</span><span ${editable}><strong>인담자 Q&A</strong> — ${job.cultureNote}</span></div>
+        <div class="benefit-kanban">${bens}</div>
+        <div class="culture-note"><span>💬</span><span ${ce}><strong>인담자 Q&A</strong> — ${job.cultureNote}</span></div>
       </div>
       <div class="jb-section">
         <div class="jb-hd"><div class="jb-bar"></div><h2 class="jb-title">전형 절차</h2></div>
-        <div class="proc-wrap"><div style="display:flex;flex-direction:column;gap:0;width:100%;">
-          <div class="proc-item"><div class="proc-num n1">📄<div class="proc-step-badge">1</div></div><div class="proc-content"><div class="proc-title" ${editable}>서류 전형</div><div class="proc-sub" ${editable}>이력서 · 자기소개서 · 포트폴리오 파일 첨부 제출</div></div></div>
-          <div class="proc-item"><div class="proc-num n2">💬<div class="proc-step-badge">2</div></div><div class="proc-content"><div class="proc-title" ${editable}>면접 전형</div><div class="proc-sub" ${editable}>직무 역량 면접 · 합격자 개별 안내</div></div></div>
-          <div class="proc-item"><div class="proc-num n3">🎉<div class="proc-step-badge">3</div></div><div class="proc-content"><div class="proc-title" ${editable}>최종 합격</div><div class="proc-sub" ${editable}>처우 협의 후 입사 일정 조율</div></div></div>
-        </div></div>
+        <div class="proc-wrap">
+          <div style="display:flex;flex-direction:column;gap:0;width:100%;">
+            <div class="proc-item"><div class="proc-num n1">📄<div class="proc-step-badge">1</div></div><div class="proc-content"><div class="proc-title" ${ce}>서류 전형</div><div class="proc-sub" ${ce}>이력서 · 자기소개서 · 포트폴리오 파일 첨부 제출</div></div></div>
+            <div class="proc-item"><div class="proc-num n2">💬<div class="proc-step-badge">2</div></div><div class="proc-content"><div class="proc-title" ${ce}>면접 전형</div><div class="proc-sub" ${ce}>직무 역량 면접 · 합격자 개별 안내</div></div></div>
+            <div class="proc-item"><div class="proc-num n3">🎉<div class="proc-step-badge">3</div></div><div class="proc-content"><div class="proc-title" ${ce}>최종 합격</div><div class="proc-sub" ${ce}>처우 협의 후 입사 일정 조율</div></div></div>
+          </div>
+        </div>
       </div>
       <div class="apply-cta">
-        <div class="apply-cta-title" ${editable}>함께 만들어갈 당신을 기다립니다</div>
-        <div class="apply-cta-sub" ${editable}>채용 인원 확보 시 공고가 조기 마감될 수 있습니다</div>
+        <div class="apply-cta-title" ${ce}>함께 만들어갈 당신을 기다립니다</div>
+        <div class="apply-cta-sub" ${ce}>채용 인원 확보 시 공고가 조기 마감될 수 있습니다</div>
         <a href="${job.tallyUrl}" class="apply-cta-btn" target="_blank">지원서 제출하기 →</a>
-        <div class="apply-cta-contact" ${editable}>문의 : 현성그룹 인사팀 · 070-4603-1571<br>www.dasancntech.com · www.rubycell.co.kr</div>
+        <div class="apply-cta-contact" ${ce}>문의 : 현성그룹 인사팀 · 070-4603-1571<br>www.dasancntech.com · www.rubycell.co.kr</div>
       </div>
     </div>
   </div>`;
@@ -704,79 +701,92 @@ function showJob(jobId) {
   document.querySelector('.content')?.scrollTo(0, 0);
 }
 
-// ════════════════════════════════════════
-// 관리자: 공고 추가
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
+// 아이콘 선택기
+// ══════════════════════════════════════════
+function openIconPicker() {
+  const grid = document.getElementById('iconGrid');
+  grid.innerHTML = Object.entries(CATEGORY_MAP).map(([cat, val]) => `
+    <div class="icon-opt ${selectedIcon.category === cat ? 'selected' : ''}" onclick="selectIcon('${cat}')">
+      <div class="icon-opt-emoji">${val.emoji}</div>
+      <div class="icon-opt-label">${cat}</div>
+    </div>`).join('');
+  document.getElementById('iconPicker').classList.add('show');
+}
+function closeIconPicker() { document.getElementById('iconPicker').classList.remove('show'); }
+function selectIcon(category) {
+  const cat = CATEGORY_MAP[category] || CATEGORY_MAP['기타'];
+  selectedIcon = { emoji: cat.emoji, category };
+  document.getElementById('f-icon').value = cat.emoji;
+  document.getElementById('f-category').value = category;
+  document.getElementById('selectedIconEmoji').textContent = cat.emoji;
+  document.getElementById('selectedIconLabel').textContent = category;
+  closeIconPicker();
+}
+
+// ══════════════════════════════════════════
+// 공고 추가 모달
+// ══════════════════════════════════════════
 function openAddModal(copyFrom) {
-  const modal = document.getElementById('addModal');
+  copySourceId = copyFrom || null;
   document.getElementById('addModalTitle').textContent = copyFrom ? '📋 공고 복사' : '➕ 새 공고 추가';
-  document.getElementById('add-btn-confirm-label') && (document.querySelector('.add-btn-confirm').textContent = copyFrom ? '📋 복사 추가' : '✅ 공고 추가');
+  document.getElementById('addConfirmBtn').textContent = copyFrom ? '📋 복사 추가' : '✅ 공고 추가';
 
   if (copyFrom) {
     const job = JOBS.find(j => j.id === copyFrom);
     if (job) {
-      document.getElementById('f-title').value = job.title + ' (복사)';
-      document.getElementById('f-icon').value = job.icon;
-      document.getElementById('f-status').value = job.status;
-      document.getElementById('f-dept').value = job.dept;
-      document.getElementById('f-career').value = job.career;
-      document.getElementById('f-badge').value = job.badge;
-      document.getElementById('f-tally').value = job.tallyUrl;
-      document.getElementById('f-chips').value = job.chips.join(', ');
-      document.getElementById('f-duties').value = job.duties.join('\n');
-      document.getElementById('f-req').value = job.required.join('\n');
-      document.getElementById('f-pref').value = job.preferred.join('\n');
+      selectIcon(job.category);
+      document.getElementById('f-title').value    = job.title + ' (복사)';
+      document.getElementById('f-dept').value     = job.dept;
+      document.getElementById('f-career').value   = job.career;
+      document.getElementById('f-location').value = job.location;
+      document.getElementById('f-status').value   = job.status;
+      document.getElementById('f-deadline').value = job.deadline;
+      document.getElementById('f-tally').value    = job.tallyUrl;
+      document.getElementById('f-duties').value   = job.duties.join('\n');
+      document.getElementById('f-req').value      = job.required.join('\n');
+      document.getElementById('f-pref').value     = job.preferred.join('\n');
     }
   } else {
-    ['f-title','f-icon','f-dept','f-career','f-badge','f-tally','f-chips','f-duties','f-req','f-pref'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    document.getElementById('f-icon').value = '📋';
-    document.getElementById('f-status').value = 'open';
-    document.getElementById('f-tally').value = 'https://tally.so/r/vGJq08';
-    document.getElementById('f-chips').value = '🏢 정규직, 💰 면접 후 협의, ⏰ 주5일 09:00–18:00';
+    selectIcon('기타');
+    ['f-title','f-dept','f-career','f-location','f-deadline'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-status').value  = '채용중';
+    document.getElementById('f-tally').value   = 'https://tally.so/r/vGJq08';
+    document.getElementById('f-duties').value  = '';
+    document.getElementById('f-req').value     = '';
+    document.getElementById('f-pref').value    = '';
   }
-  modal.classList.add('show');
+  document.getElementById('addModal').classList.add('show');
 }
-
-function closeAddModal() {
-  document.getElementById('addModal').classList.remove('show');
-}
+function closeAddModal() { document.getElementById('addModal').classList.remove('show'); }
 
 function confirmAddJob() {
   const title = document.getElementById('f-title').value.trim();
   if (!title) { alert('공고 제목을 입력해주세요.'); return; }
 
+  const category = document.getElementById('f-category').value;
+  const cat      = CATEGORY_MAP[category] || CATEGORY_MAP['기타'];
+  const tmpl     = TEMPLATES[category] || TEMPLATES['default'];
+
+  const toLines = id => document.getElementById(id).value.split('\n').map(s => s.trim()).filter(Boolean);
+
   const newJob = {
-    id: 'job_' + Date.now(),
-    icon: document.getElementById('f-icon').value.trim() || '📋',
+    id:          'job_' + Date.now(),
     title,
-    dept: document.getElementById('f-dept').value.trim() || '㈜다산씨엔텍',
-    career: document.getElementById('f-career').value.trim() || '경력 협의',
-    status: document.getElementById('f-status').value,
-    badge: document.getElementById('f-badge').value.trim() || '신규 채용',
-    tallyUrl: document.getElementById('f-tally').value.trim() || 'https://tally.so/r/vGJq08',
-    chips: document.getElementById('f-chips').value.split(',').map(s => s.trim()).filter(Boolean),
-    infoRows: [
-      ['📌 공고 상태', document.getElementById('f-status').value === 'open' ? '<span class="info-badge green">🟢 채용 중</span>' : '<span class="info-badge">⛔ 마감</span>'],
-      ['👤 모집 구분', document.getElementById('f-career').value.trim() || '경력 협의'],
-      ['🏢 고용형태', '<span class="info-badge green">정규직</span>'],
-      ['💰 급여', '<span class="info-badge gold">경력 협의 (희망 연봉 기재 요청)</span>'],
-      ['📍 근무지', '서울 강서구 마곡중앙4로 46 (다산 R&D센터)'],
-      ['⏰ 근무시간', '주 5일, 09:00~18:00'],
-      ['📅 마감일', '<span class="info-badge gold">채용 시 마감 (조기 마감 가능)</span>'],
-      ['📞 문의', '현성그룹 인사팀 · 070-4603-1571'],
-    ],
-    companyDesc: '다산씨엔텍은 <strong>CGMP 인증 화장품 OEM/ODM 전문 R&D 기업</strong>입니다.',
-    duties: document.getElementById('f-duties').value.split('\n').map(s => s.trim()).filter(Boolean),
-    required: document.getElementById('f-req').value.split('\n').map(s => s.trim()).filter(Boolean),
-    preferred: document.getElementById('f-pref').value.split('\n').map(s => s.trim()).filter(Boolean),
-    benefits: [
-      {title:'🛡 급여 & 보험', items:['✅ 4대보험 완비','💼 퇴직연금','🏆 연 1회 인센티브']},
-      {title:'🏖 휴가 & 여가', items:['📅 자유 연차','🏨 대명리조트 이용','🔄 장기근속 Refresh','🍼 출산·육아휴직']},
-      {title:'📚 교육 & 성장', items:['🎓 OJT 교육','📖 도서 구매비','💡 직무 교육비']},
-      {title:'🏢 근무 환경', items:['👔 자율 복장','🚗 주차 무료']},
-    ],
+    category,
+    icon:        cat.emoji,
+    badge:       cat.badge,
+    dept:        document.getElementById('f-dept').value.trim() || '㈜다산씨엔텍',
+    career:      document.getElementById('f-career').value.trim() || '경력 협의',
+    location:    document.getElementById('f-location').value.trim() || '마곡 R&D센터',
+    status:      document.getElementById('f-status').value,
+    tallyUrl:    document.getElementById('f-tally').value.trim() || 'https://tally.so/r/vGJq08',
+    deadline:    document.getElementById('f-deadline').value.trim() || '채용시마감',
+    companyDesc: tmpl.companyDesc,
+    duties:      toLines('f-duties').length ? toLines('f-duties') : [...tmpl.duties],
+    required:    toLines('f-req').length    ? toLines('f-req')    : [...tmpl.required],
+    preferred:   toLines('f-pref').length   ? toLines('f-pref')   : [...tmpl.preferred],
+    benefits:    DEFAULT_BENEFITS.map(b => ({...b, items:[...b.items]})),
     cultureNote: '내근 100% · 자율 복장 · 야근 거의 없음',
   };
 
@@ -787,34 +797,80 @@ function confirmAddJob() {
   // 관리자 모드 유지
   document.body.classList.add('admin-mode');
   document.getElementById('adminBar').classList.add('show');
-  enableEditables();
   showToast('✅ 공고가 추가됐습니다. 내용을 클릭해서 수정하세요.', 3500);
 }
 
-// ════════════════════════════════════════
-// 관리자: 공고 복사 / 삭제
-// ════════════════════════════════════════
-function copyJob(jobId, e) {
-  e.stopPropagation();
-  openAddModal(jobId);
-}
-
+// ══════════════════════════════════════════
+// 공고 복사 / 삭제
+// ══════════════════════════════════════════
+function copyJob(jobId, e) { e.stopPropagation(); openAddModal(jobId); }
 function deleteJob(jobId, e) {
   e.stopPropagation();
   const job = JOBS.find(j => j.id === jobId);
-  if (!confirm(`"${job?.title}" 공고를 삭제하시겠습니까?\n이 작업은 저장 후 반영됩니다.`)) return;
+  if (!confirm(`"${job?.title}" 공고를 삭제하시겠습니까?`)) return;
   JOBS = JOBS.filter(j => j.id !== jobId);
   if (currentJobId === jobId) currentJobId = JOBS[0]?.id || null;
   renderAll();
   document.body.classList.add('admin-mode');
   document.getElementById('adminBar').classList.add('show');
-  enableEditables();
-  showToast('🗑 공고가 삭제됐습니다.');
+  showToast('🗑 공고가 삭제됐습니다. 시트에서도 노출여부를 N으로 변경하세요.', 4000);
 }
 
-// ════════════════════════════════════════
-// 관리자: 비밀번호 / 진입 / 종료
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
+// 관리자: 편집내용을 localStorage에 저장
+// ══════════════════════════════════════════
+function syncFromDOM() {
+  JOBS.forEach(job => {
+    const panel = document.getElementById(job.id);
+    if (!panel) return;
+    const g = sel => panel.querySelector(sel);
+    const ga = sel => [...panel.querySelectorAll(sel)];
+
+    const titleEl = g('.job-hero-title');
+    if (titleEl) job.title = titleEl.innerHTML;
+    const deptEl = g('.job-hero-dept');
+    if (deptEl) job.dept = deptEl.innerHTML;
+    const badgeEl = g('.job-hero-badge');
+    if (badgeEl) job.badge = badgeEl.innerHTML;
+    const compEl = g('.callout > div:last-child');
+    if (compEl) job.companyDesc = compEl.innerHTML;
+    const dutyEls = ga('.duty-item');
+    if (dutyEls.length) job.duties = dutyEls.map(el => el.innerHTML.replace(/^▸\s*/, '').trim());
+    const reqEls = ga('.qual-box:first-of-type .qual-item span');
+    if (reqEls.length) job.required = reqEls.map(el => el.innerHTML.trim());
+    const prefEls = ga('.qual-box:last-of-type .qual-item span');
+    if (prefEls.length) job.preferred = prefEls.map(el => el.innerHTML.trim());
+    const cultureEl = g('.culture-note > span:last-child');
+    if (cultureEl) job.cultureNote = cultureEl.innerHTML.replace(/<strong>.*?<\/strong>\s*—\s*/, '');
+    const bcCols = ga('.benefit-col');
+    if (bcCols.length) job.benefits = bcCols.map(col => ({
+      title: col.querySelector('.bc-title')?.innerHTML || '',
+      items: [...col.querySelectorAll('.bc-card')].map(c => c.innerHTML),
+    }));
+  });
+}
+
+function saveToSheet() {
+  syncFromDOM();
+  // 상세 내용을 localStorage에 저장 (제목 기준 키)
+  const details = {};
+  JOBS.forEach(job => {
+    details[job.title] = {
+      companyDesc: job.companyDesc,
+      duties:      job.duties,
+      required:    job.required,
+      preferred:   job.preferred,
+      benefits:    job.benefits,
+      cultureNote: job.cultureNote,
+    };
+  });
+  saveDetails(details);
+  showToast('✅ 저장 완료! 공고 추가/삭제는 구글 시트 "공고목록" 탭에서 반영하세요.', 4500);
+}
+
+// ══════════════════════════════════════════
+// 관리자 모드 진입/종료
+// ══════════════════════════════════════════
 function openPwModal() {
   document.getElementById('pwModal').classList.add('show');
   document.getElementById('pwInput').value = '';
@@ -824,8 +880,7 @@ function openPwModal() {
 function closePwModal() { document.getElementById('pwModal').classList.remove('show'); }
 function checkPw() {
   if (document.getElementById('pwInput').value === ADMIN_PASSWORD) {
-    closePwModal();
-    enterAdmin();
+    closePwModal(); enterAdmin();
   } else {
     document.getElementById('pwError').textContent = '비밀번호가 틀렸습니다.';
     document.getElementById('pwInput').value = '';
@@ -836,132 +891,31 @@ function checkPw() {
 function enterAdmin() {
   document.body.classList.add('admin-mode');
   document.getElementById('adminBar').classList.add('show');
-  renderAll(); // contenteditable 포함해서 다시 렌더링
-  enableEditables();
-  showToast('✏️ 편집 모드 시작. 텍스트를 클릭해서 수정하고 공고를 추가·삭제·복사하세요!', 4000);
+  renderAll();
+  showToast('✏️ 편집 모드 시작. 텍스트를 클릭해서 수정하세요!', 3500);
 }
-
-function enableEditables() {
-  document.querySelectorAll('[contenteditable]').forEach(el => {
-    el.setAttribute('spellcheck', 'false');
-  });
-}
-
 function exitAdmin() {
+  syncFromDOM();
   document.body.classList.remove('admin-mode');
   document.getElementById('adminBar').classList.remove('show');
-  renderAll(); // contenteditable 없이 다시 렌더링
+  renderAll();
   showToast('편집 모드 종료');
 }
 
-// ════════════════════════════════════════
-// 저장 (HTML 다운로드)
-// ════════════════════════════════════════
-function saveFile() {
-  // 현재 편집된 내용을 JOBS 데이터에 동기화
-  syncEditedContent();
-
-  // admin-mode 없이 새로 렌더링한 HTML 생성
-  const cloned = document.documentElement.cloneNode(true);
-
-  // JOBS 데이터를 최신 상태로 스크립트에 반영
-  const scripts = cloned.querySelectorAll('script');
-  scripts.forEach(s => {
-    if (s.textContent.includes('let JOBS =')) {
-      s.textContent = s.textContent.replace(
-        /let JOBS = \[[\s\S]*?\];/,
-        'let JOBS = ' + JSON.stringify(JOBS, null, 2) + ';'
-      );
-    }
-  });
-
-  // admin 상태 클리어
-  cloned.body.classList.remove('admin-mode');
-  cloned.querySelector('#adminBar')?.classList.remove('show');
-  cloned.querySelectorAll('[contenteditable]').forEach(el => {
-    el.removeAttribute('contenteditable');
-    el.removeAttribute('spellcheck');
-  });
-
-  const html = '<!DOCTYPE html>\n' + cloned.outerHTML;
-  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'careers_hub_V4.html';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✅ 저장 완료! 파일을 GitHub에 업로드하면 반영됩니다.', 4000);
-}
-
-function syncEditedContent() {
-  // 현재 DOM에서 편집된 내용을 JOBS 배열에 동기화
-  JOBS.forEach(job => {
-    const panel = document.getElementById(job.id);
-    if (!panel) return;
-
-    // 제목
-    const titleEl = panel.querySelector('.job-hero-title');
-    if (titleEl) job.title = titleEl.innerHTML;
-
-    // 부서
-    const deptEl = panel.querySelector('.job-hero-dept');
-    if (deptEl) job.dept = deptEl.innerHTML;
-
-    // 배지
-    const badgeEl = panel.querySelector('.job-hero-badge');
-    if (badgeEl) job.badge = badgeEl.innerHTML;
-
-    // 업무
-    const dutyEls = panel.querySelectorAll('.duty-item');
-    if (dutyEls.length) job.duties = [...dutyEls].map(el => el.innerHTML.replace(/^▸\s*/, '').trim());
-
-    // 문화노트
-    const cultureEl = panel.querySelector('.culture-note > span:last-child');
-    if (cultureEl) job.cultureNote = cultureEl.innerHTML.replace(/<strong>.*?<\/strong>\s*—\s*/, '');
-
-    // 회사소개
-    const companyEl = panel.querySelector('.callout > div:last-child');
-    if (companyEl) job.companyDesc = companyEl.innerHTML;
-
-    // 필수/우대
-    const reqEls = panel.querySelectorAll('.qual-box:first-of-type .qual-item span');
-    if (reqEls.length) job.required = [...reqEls].map(el => el.innerHTML.trim());
-    const prefEls = panel.querySelectorAll('.qual-box:last-of-type .qual-item span');
-    if (prefEls.length) job.preferred = [...prefEls].map(el => el.innerHTML.trim());
-
-    // 공고 정보 테이블
-    const rows = panel.querySelectorAll('.info-table tr');
-    if (rows.length) {
-      job.infoRows = [...rows].map(tr => {
-        const cells = tr.querySelectorAll('td');
-        return [cells[0]?.innerHTML || '', cells[1]?.innerHTML || ''];
-      });
-    }
-
-    // bc-card
-    const bcCols = panel.querySelectorAll('.benefit-col');
-    job.benefits = [...bcCols].map(col => ({
-      title: col.querySelector('.bc-title')?.innerHTML || '',
-      items: [...col.querySelectorAll('.bc-card')].map(c => c.innerHTML)
-    }));
-  });
-}
-
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
 // 토스트
-// ════════════════════════════════════════
-function showToast(msg, dur=2500) {
+// ══════════════════════════════════════════
+function showToast(msg, dur=2800) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), dur);
 }
 
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
 // 초기화
-// ════════════════════════════════════════
-renderAll();
+// ══════════════════════════════════════════
+loadFromSheets();
 </script>
 </body>
 </html>
